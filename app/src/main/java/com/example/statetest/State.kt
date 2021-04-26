@@ -1,6 +1,6 @@
 package com.example.statetest
 
-//open class State<T : Event>(
+//open class EventHandler<T>(
 //    private val content: T?
 //) {
 //
@@ -10,23 +10,11 @@ package com.example.statetest
 //    /**
 //     * Returns the content and prevents its use again.
 //     */
-//    fun getContentIfNotHandled(
-//        peekAlwaysOnSuccess: Boolean = true,
-//        peekAlwaysOnError: Boolean = false,
-//        peekAlwaysOnLoading: Boolean = true
-//    ): T? {
-//        return if (hasBeenHandled || content == null) {
+//    fun getContentIfNotHandled(): T? {
+//        return if (hasBeenHandled) {
 //            null
 //        } else {
-////            if ((content is Resource.Success<*> && !peekAlwaysOnSuccess) ||
-////                (content is Resource.Error<*> && !peekAlwaysOnError) ||
-////                (content is Resource.Loading<*> && !peekAlwaysOnLoading)
-////            ) {
-////                hasBeenHandled = true
-////            }
-//            if(!content.emitAllTimes) {
-//                hasBeenHandled = true
-//            }
+//            hasBeenHandled = true
 //            content
 //        }
 //    }

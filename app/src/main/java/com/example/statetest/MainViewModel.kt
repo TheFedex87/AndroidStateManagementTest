@@ -12,7 +12,9 @@ class MainViewModel : ViewModel() {
 
     private val repository = Repository.getInstance()
 
-    val stateManager = StateManager<MainViewModelState>()
+    val stateManager = StateManager<MainViewModelState>(
+        MainViewModelState.Empty
+    )
 
     init {
         Log.d("StateTest", "Init view model")
@@ -91,4 +93,6 @@ sealed class MainViewModelState(
 
     class State2(isEvent: Boolean = true, resetStateOnEvent: Boolean = false) :
         MainViewModelState(null, isEvent, resetStateOnEvent)
+
+    object Empty : MainViewModelState()
 }
