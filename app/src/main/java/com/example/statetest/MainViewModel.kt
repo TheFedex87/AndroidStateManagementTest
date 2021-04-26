@@ -1,11 +1,8 @@
 package com.example.statetest
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
@@ -61,11 +58,6 @@ class MainViewModel : ViewModel() {
     }
 }
 
-interface Event {
-    val isEvent: Boolean
-    val resetState: Boolean
-}
-
 //sealed class MainViewModelState(
 //    val data: Int? = null,
 //) : Event {
@@ -79,24 +71,24 @@ interface Event {
 sealed class MainViewModelState(
     val data: Int? = null,
     override val isEvent: Boolean = false,
-    override val resetState: Boolean = false
-) : Event {
-    class Success(data: Int, isEvent: Boolean = false, resetState: Boolean = false) :
-        MainViewModelState(data, isEvent, resetState)
+    override val resetStateOnEvent: Boolean = false
+) : StateManager.EventManager {
+    class Success(data: Int, isEvent: Boolean = false, resetStateOnEvent: Boolean = false) :
+        MainViewModelState(data, isEvent, resetStateOnEvent)
 
-    class Loading(data: Int? = null, isEvent: Boolean = false, resetState: Boolean = false) :
-        MainViewModelState(data, isEvent, resetState)
+    class Loading(data: Int? = null, isEvent: Boolean = false, resetStateOnEvent: Boolean = false) :
+        MainViewModelState(data, isEvent, resetStateOnEvent)
 
     class Error(
         data: Int? = null,
         val message: String,
         isEvent: Boolean = true,
-        resetState: Boolean = true
-    ) : MainViewModelState(data, isEvent, resetState)
+        resetStateOnEvent: Boolean = true
+    ) : MainViewModelState(data, isEvent, resetStateOnEvent)
 
-    class State1(isEvent: Boolean = false, resetState: Boolean = false) :
-        MainViewModelState(null, isEvent, resetState)
+    class State1(isEvent: Boolean = false, resetStateOnEvent: Boolean = false) :
+        MainViewModelState(null, isEvent, resetStateOnEvent)
 
-    class State2(isEvent: Boolean = true, resetState: Boolean = false) :
-        MainViewModelState(null, isEvent, resetState)
+    class State2(isEvent: Boolean = true, resetStateOnEvent: Boolean = false) :
+        MainViewModelState(null, isEvent, resetStateOnEvent)
 }

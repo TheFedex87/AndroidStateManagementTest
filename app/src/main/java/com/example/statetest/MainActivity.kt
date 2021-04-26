@@ -44,7 +44,7 @@ class MainActivity : AppCompatActivity() {
         mainViewModel.stateManager.event.observe(this) {
             when(it) {
                 is MainViewModelState.Error -> {
-                    binding.progressBar.isVisible = false
+                    //binding.progressBar.isVisible = false
                     Snackbar.make(binding.root, "Error: ${it.message}", Snackbar.LENGTH_LONG).show()
                 }
                 is MainViewModelState.State2 -> {
