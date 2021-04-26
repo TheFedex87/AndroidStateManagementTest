@@ -19,25 +19,55 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        mainViewModel.data.observe(this) {
-            Log.d("StateTest", it.toString())
-            it.getContentIfNotHandled()?.let { data ->
-                binding.progressBar.isVisible = data is Resource.Loading
-                if(data is Resource.Error) {
-                    Snackbar.make(binding.root, "Error: ${data.throwable!!.message}", Snackbar.LENGTH_LONG).show()
+//        mainViewModel.data.observe(this) {
+//            Log.d("StateTest", it.toString())
+//            it.getContentIfNotHandled()?.let { data ->
+//                binding.progressBar.isVisible = data is MainViewModelState.Loading
+//                if(data is MainViewModelState.Error) {
+//                    Snackbar.make(binding.root, "Error: ${data.message}", Snackbar.LENGTH_LONG).show()
+//                }
+//                if(data is MainViewModelState.State2) {
+//                    Snackbar.make(binding.root, "Emitted event 2", Snackbar.LENGTH_LONG).show()
+//                }
+//                data.data?.let {
+//                    binding.textViewResult.text = it.toString()
+//                }
+//            }
+//        }
+
+        mainViewModel.stateManager.state.observe(this) {
+            binding.progressBar.isVisible = it is MainViewModelState.Loading
+            it?.data?.let {
+                binding.textViewResult.text = it.toString()
+            }
+        }
+        mainViewModel.stateManager.event.observe(this) {
+            when(it) {
+                is MainViewModelState.Error -> {
+                    binding.progressBar.isVisible = false
+                    Snackbar.make(binding.root, "Error: ${it.message}", Snackbar.LENGTH_LONG).show()
                 }
-                data.data?.let {
-                    binding.textViewResult.text = it.toString()
+                is MainViewModelState.State2 -> {
+                    Snackbar.make(binding.root, "Emitted event 2", Snackbar.LENGTH_LONG).show()
+                }
+                else -> {
+                    // Any other state is managed as State and not as Event
                 }
             }
         }
 
-        binding.buttonGetData.setOnClickListener {
-            mainViewModel.getData(false)
-        }
+        binding.apply {
+            buttonGetData.setOnClickListener {
+                mainViewModel.getData(false)
+            }
 
-        binding.buttonGetDataWithError.setOnClickListener {
-            mainViewModel.getData(true)
+            buttonGetDataWithError.setOnClickListener {
+                mainViewModel.getData(true)
+            }
+
+            buttonEmitEvent.setOnClickListener {
+                mainViewModel.emitValue()
+            }
         }
     }
 }

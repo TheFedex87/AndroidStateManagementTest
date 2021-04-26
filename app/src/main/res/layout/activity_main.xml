@@ -23,18 +23,23 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/textViewResult"
         android:layout_centerHorizontal="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
         android:text="GET DATA" />
 
     <Button
         android:id="@+id/buttonGetDataWithError"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/textViewResult"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
+        android:layout_below="@id/buttonGetData"
+        android:layout_centerHorizontal="true"
         android:text="GET DATA WITH ERROR" />
+
+    <Button
+        android:id="@+id/buttonEmitEvent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/buttonGetDataWithError"
+        android:layout_centerHorizontal="true"
+        android:text="EMIT EVENT" />
 
     <ProgressBar
         android:id="@+id/progressBar"
