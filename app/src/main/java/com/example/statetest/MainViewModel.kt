@@ -13,7 +13,7 @@ class MainViewModel : ViewModel() {
     private val repository = Repository.getInstance()
 
     val stateManager = StateManager<MainViewModelState>(
-        MainViewModelState.Empty
+        MainViewModelState.Empty(null)
     )
 
     init {
@@ -31,7 +31,8 @@ class MainViewModel : ViewModel() {
                             MainViewModelState.Error(
                                 null,
                                 it.throwable!!.message!!
-                            )
+                            ),
+                            MainViewModelState.Empty(it.data?.let { value -> value })
                         )
                     }
                     is Resource.Loading -> {
@@ -94,5 +95,5 @@ sealed class MainViewModelState(
     class State2(isEvent: Boolean = true, resetStateOnEvent: Boolean = false) :
         MainViewModelState(null, isEvent, resetStateOnEvent)
 
-    object Empty : MainViewModelState()
+    class Empty(data: Int?) : MainViewModelState(data)
 }

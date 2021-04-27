@@ -1,6 +1,6 @@
 package com.example.statetest
 
-import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.asLiveData
 import kotlinx.coroutines.flow.*
 
@@ -8,31 +8,45 @@ class StateManager<T : StateManager.EventManager> constructor(
     initialStateValue: T? = null
 ) {
     private val _event = MutableSharedFlow<EventHandler<T>>()
-    val event: LiveData<EventHandler<T>> get() = _event.asLiveData()
+    //val event: LiveData<EventHandler<T>> get() = _event.asLiveData()
 
     private val _state = MutableStateFlow(initialStateValue)
-    val state: LiveData<T?> get() = _state.asLiveData()
+    //val state: LiveData<T?> get() = _state.asLiveData()
 
-    val singleStateEvent = combine(
-        _state,
-        _event
-    ) { state, event ->
-        Pair(state, event)
-    }.flatMapLatest { (state, event) ->
-        flow {
-            emit(
-                SingleStateEvent(
-                    state,
-                    event
-                )
-            )
+    val singleStateEvent = MediatorLiveData<SingleStateEvent<T>>()
+
+    init {
+        singleStateEvent.addSource(_event.asLiveData()) {
+            singleStateEvent.value = SingleStateEvent(singleStateEvent.value?.state, it)
         }
-    }.asLiveData()
+        singleStateEvent.addSource(_state.asLiveData()) {
+            singleStateEvent.value = SingleStateEvent(it, singleStateEvent.value?.event)
+        }
+    }
 
-    suspend fun setState(state: T) {
+//    val singleStateEvent = combine(
+//        _state,
+//        _event
+//    ) { state, event ->
+//        Pair(state, event)
+//    }.flatMapLatest { (state, event) ->
+//        flow {
+//            emit(
+//                SingleStateEvent(
+//                    state,
+//                    event
+//                )
+//            )
+//        }
+//    }.asLiveData()
+
+    suspend fun setState(
+        state: T,
+        stateValueIfEvent: T? = null
+    ) {
         if (state.isEvent) {
             if (state.resetStateOnEvent) {
-                _state.value = null
+                _state.value = stateValueIfEvent
             }
             _event.emit(EventHandler(state))
         } else {
@@ -72,6 +86,6 @@ class StateManager<T : StateManager.EventManager> constructor(
 
     data class SingleStateEvent<T>(
         val state: T?,
-        val event: EventHandler<T>
+        val event: EventHandler<T>?
     )
 }

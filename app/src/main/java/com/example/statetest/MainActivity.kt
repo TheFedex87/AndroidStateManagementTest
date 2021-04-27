@@ -2,11 +2,8 @@ package com.example.statetest
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
-import androidx.lifecycle.asLiveData
-import androidx.lifecycle.lifecycleScope
 import com.example.statetest.databinding.ActivityMainBinding
 import com.google.android.material.snackbar.Snackbar
 

@@ -26,10 +26,10 @@ class Repository private constructor() {
 
     suspend fun getData(simulateError: Boolean = false)  {
         _dataFetchState.value = Resource.Loading(null)
-        delay(5000)
+        delay(2000)
         if(!simulateError)
             _dataFetchState.value = Resource.Success(5)
         else
-            _dataFetchState.value = Resource.Error(Exception("TEST ERROR"), null)
+            _dataFetchState.value = Resource.Error(Exception("TEST ERROR"), 5)
     }
 }
