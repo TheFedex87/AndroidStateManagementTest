@@ -1,25 +1,26 @@
 package com.example.statetest
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.asLiveData
 import kotlinx.coroutines.flow.*
 
-class StateManager<T : StateManager.EventManager> constructor(
+class StateManager<T : StateManager.State> constructor(
     initialStateValue: T? = null
 ) {
     private val _event = MutableSharedFlow<EventHandler<T>>()
-    //val event: LiveData<EventHandler<T>> get() = _event.asLiveData()
+    val event: LiveData<EventHandler<T>> get() = _event.asLiveData()
 
     private val _state = MutableStateFlow(initialStateValue)
-    //val state: LiveData<T?> get() = _state.asLiveData()
+    val state: LiveData<T?> get() = _state.asLiveData()
 
     val singleStateEvent = MediatorLiveData<SingleStateEvent<T>>()
 
     init {
-        singleStateEvent.addSource(_event.asLiveData()) {
+        singleStateEvent.addSource(event) {
             singleStateEvent.value = SingleStateEvent(singleStateEvent.value?.state, it)
         }
-        singleStateEvent.addSource(_state.asLiveData()) {
+        singleStateEvent.addSource(state) {
             singleStateEvent.value = SingleStateEvent(it, singleStateEvent.value?.event)
         }
     }
@@ -54,7 +55,7 @@ class StateManager<T : StateManager.EventManager> constructor(
         }
     }
 
-    interface EventManager {
+    interface State {
         val isEvent: Boolean
         val resetStateOnEvent: Boolean
     }

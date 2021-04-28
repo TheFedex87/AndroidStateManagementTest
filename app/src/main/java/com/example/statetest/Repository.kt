@@ -25,8 +25,8 @@ class Repository private constructor() {
     val dataFetchState: StateFlow<Resource<Int>> get() = _dataFetchState
 
     suspend fun getData(simulateError: Boolean = false)  {
-        _dataFetchState.value = Resource.Loading(null)
-        delay(2000)
+        _dataFetchState.value = Resource.Loading(4)
+        delay(4000)
         if(!simulateError)
             _dataFetchState.value = Resource.Success(5)
         else

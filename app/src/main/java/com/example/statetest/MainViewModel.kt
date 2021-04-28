@@ -37,10 +37,10 @@ class MainViewModel : ViewModel() {
                     }
                     is Resource.Loading -> {
                         //_data.value = State(MainViewModelState.Loading())
-                        stateManager.setState(MainViewModelState.Loading())
+                        stateManager.setState(MainViewModelState.Loading(it.data))
                     }
                     is Resource.Empty -> {
-
+                        getData(false)
                     }
                 }
             }
@@ -73,27 +73,28 @@ class MainViewModel : ViewModel() {
 
 sealed class MainViewModelState(
     val data: Int? = null,
+    val errorMessage: String? = null,
     override val isEvent: Boolean = false,
     override val resetStateOnEvent: Boolean = false
-) : StateManager.EventManager {
+) : StateManager.State {
     class Success(data: Int, isEvent: Boolean = false, resetStateOnEvent: Boolean = false) :
-        MainViewModelState(data, isEvent, resetStateOnEvent)
+        MainViewModelState(data, null, isEvent, resetStateOnEvent)
 
     class Loading(data: Int? = null, isEvent: Boolean = false, resetStateOnEvent: Boolean = false) :
-        MainViewModelState(data, isEvent, resetStateOnEvent)
+        MainViewModelState(data, null, isEvent, resetStateOnEvent)
 
     class Error(
         data: Int? = null,
         val message: String,
         isEvent: Boolean = true,
         resetStateOnEvent: Boolean = true
-    ) : MainViewModelState(data, isEvent, resetStateOnEvent)
+    ) : MainViewModelState(data, message, isEvent, resetStateOnEvent)
 
     class State1(isEvent: Boolean = false, resetStateOnEvent: Boolean = false) :
-        MainViewModelState(null, isEvent, resetStateOnEvent)
+        MainViewModelState(null, null, isEvent, resetStateOnEvent)
 
     class State2(isEvent: Boolean = true, resetStateOnEvent: Boolean = false) :
-        MainViewModelState(null, isEvent, resetStateOnEvent)
+        MainViewModelState(null, null, isEvent, resetStateOnEvent)
 
     class Empty(data: Int?) : MainViewModelState(data)
 }
